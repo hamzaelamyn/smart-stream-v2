@@ -4,7 +4,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Stream Platform</title>
+    <title>Smart Stream Platform V2</title>
 
     <link rel="shortcut icon" href="assets/images/preview.png" type="image/x-icon">
 
@@ -48,8 +48,14 @@
                         <input id="search-channels" class="bg-[#161d2e] hover:bg-[#1e2940] focus:bg-[#1e2940] placeholder-slate-500 shadow-md shadow-black/40 transition duration-300 hover p-3 text-slate-100 w-full rounded-md" type="text" placeholder="Search Channel ...">
 
                     </div>
+                    
+                    <select id="select-channels" class="bg-[#161d2e] hover:bg-[#1e2940] focus:bg-[#1e2940] text-white p-3 w-full transition-colors rounded-md cursor-pointer" id="pet-select" name="pets">
+                        <option class="" value="all-channels" selected>All Channels</option>
+                        <option value="favorite-channels">Favorite</option>
+                        <option value="blacklist-channels">Blacklist</option>
+                    </select>
 
-                    <ul id="list-channels" class="max-h-dvh xl:max-h-142 overflow-y-auto space-y-2 scrollbar-thumb-gray-500">
+                    <ul id="list-channels" class="max-h-dvh xl:max-h-145 overflow-y-auto space-y-1 scrollbar-thumb-gray-500">
 
                     </ul>
 

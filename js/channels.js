@@ -1,10 +1,17 @@
 import { getChannesFromCountryAPI } from "./api.js"
 
+function requestRenderSVGContect(type) {
+    return (type === "fill") ? "M5.83,21l1.63-7.03L2,9.25L9.2,8.63L12,2l2.8,6.63L22,9.25l-5.45,4.72L18.18,21L12,17.27L5.83,21Z" : "M8.85,16.83L12,14.93l3.15,1.93l-0.82-3.6l2.78-2.4l-3.65-0.33L12,7.13L10.55,10.5L6.9,10.83l2.78,2.43L8.85,16.83ZM5.83,21l1.63-7.03L2,9.25L9.2,8.63L12,2l2.8,6.63L22,9.25l-5.45,4.72L18.18,21L12,17.27L5.83,21ZM12,12.25Z"
+}
+
 export function requestRenderChannels(data) {
     return `
         <li id="${data.id}" data-channel="${data.name}">
             <div data-active="false" onclick="this.dataset.active = this.dataset.active === 'true' ? 'false' : 'true'" class="flex items-center gap-4 bg-black/40 hover:bg-black/20 data-[active=true]:bg-gray-500 px-2 py-1 transition-colors rounded-md cursor-pointer">
                 <img class="h-13" src="assets/images/preview.png" alt="channel-logo">
+
+                <svg class="${data.isFavorite ? "hover:fill-gray-600" : "hover:fill-amber-300"}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="${data.isFavorite ? "#FFD414" : "#FFFFFF"}"><path d="${requestRenderSVGContect(data.isFavorite ? "fill" : false)}"/></svg>
+
                 <p class="text-white font-semibold">${data.channelNumber}</p>
                 <p class="text-white font-semibold">${data.name}</p>
             </div>
@@ -92,6 +99,30 @@ export async function loadDefaultChannelSteram() {
     
 }
 
+async function loadChannelsBySelect(selectedInedx) {
+
+    const list_channels = document.getElementById("list-channels");
+    if (!list_channels) return false;
+
+    const channels = await getChannesFromCountryAPI();
+    if (!channels) return false;
+
+    list_channels.innerHTML = "";
+
+    const result = channels.filter(code => {
+
+        if (selectedInedx == 0)
+            return true;
+        
+        if (selectedInedx == 1)
+            return code.isFavorite === true;
+
+    })
+
+    result.forEach(data => list_channels.innerHTML += requestRenderChannels(data))
+
+}
+
 export function loadChannelEvents() {
     const ul_channels = document.getElementById("list-channels");
     if (!ul_channels) return;
@@ -173,4 +204,12 @@ export function loadChannelEvents() {
             });
         });
     }
+
+    const select_channels = document.getElementById("select-channels");
+    if (select_channels) {
+        select_channels.addEventListener("change", () => {
+            loadChannelsBySelect(select_channels.selectedIndex)
+        });
+    }
+
 }

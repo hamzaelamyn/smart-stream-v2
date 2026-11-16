@@ -4,4 +4,4 @@ import { loadChannelEvents } from "./channels.js"
 
 loadListCountry();
 loadAsideEvents();
-loadChannelEvents()
+loadChannelEvents();

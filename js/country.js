@@ -35,7 +35,7 @@ export async function loadListCountry() {
             const channels = await getChannesFromCountryAPI()
             if (!channels) return false;
 
-            const result = channels.filter(code => { return code.countryCode === listItem.id})
+            const result = channels.filter(channel => { return channel.countryCode === listItem.id && !channel.isBlacklisted })
 
             list_channels.innerHTML = "";
             result.forEach(data => list_channels.innerHTML += requestRenderChannels(data))

@@ -36,11 +36,13 @@ export async function getCountryFromAPI() {
 
 export async function getChannesFromCountryAPI() {
 
+    const API_URL = "https://6af352bbd2377d6c3704e947.mockapi.io/api/v1/channels"
+
     if (CHANNELS.length > 0) return CHANNELS;
 
     try {
 
-        const response = await fetch("https://6af352bbd2377d6c3704e947.mockapi.io/api/v1/channels");
+        const response = await fetch(API_URL);
 
         if (!response.ok) {
             
@@ -57,6 +59,16 @@ export async function getChannesFromCountryAPI() {
         }
 
         const data = await response.json();
+
+        // for (const value of data) {
+        //     if (!value.isFavorite || !value.isBlacklisted)
+        //         await fetch(`${API_URL}/${value.id}`, {
+        //             method: "PUT",
+        //             headers: { "Content-Type": "application/json" },
+        //             body: JSON.stringify({ isFavorite: false, isBlacklisted: false })
+        //         });
+        // }
+
         CHANNELS = [...data];
 
         return CHANNELS;

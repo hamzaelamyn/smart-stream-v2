@@ -1,4 +1,5 @@
-import { getChannesFromCountryAPI } from "./api.js"
+import { getChannesFromCountryAPI, setChannelFavorite, setChannelBlackList } from "./api.js"
+import { getSelectedCountry } from "./country.js"
 
 function requestRenderSVGContect(type) {
     return (type === "fill") ? "M5.83,21l1.63-7.03L2,9.25L9.2,8.63L12,2l2.8,6.63L22,9.25l-5.45,4.72L18.18,21L12,17.27L5.83,21Z" : "M8.85,16.83L12,14.93l3.15,1.93l-0.82-3.6l2.78-2.4l-3.65-0.33L12,7.13L10.55,10.5L6.9,10.83l2.78,2.43L8.85,16.83ZM5.83,21l1.63-7.03L2,9.25L9.2,8.63L12,2l2.8,6.63L22,9.25l-5.45,4.72L18.18,21L12,17.27L5.83,21ZM12,12.25Z"
@@ -10,8 +11,8 @@ export function requestRenderChannels(data) {
             <div data-active="false" onclick="this.dataset.active = this.dataset.active === 'true' ? 'false' : 'true'" class="flex items-center gap-4 bg-black/40 hover:bg-black/20 data-[active=true]:bg-gray-500 px-2 py-1 transition-colors rounded-md cursor-pointer">
                 <img class="h-13" src="assets/images/preview.png" alt="channel-logo">
 
-                <svg class="${data.isFavorite ? "hover:fill-gray-600" : "hover:fill-amber-300"}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="${data.isFavorite ? "#FFD414" : "#FFFFFF"}"><path d="${requestRenderSVGContect(data.isFavorite ? "fill" : false)}"/></svg>
-                <svg class="hover:fill-red-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="${data.isBlacklisted ? "#cf2b2b" : "#999999"}"><path d="M8.1,21.21q-1.82-0.79-3.17-2.14Q3.58,17.73 2.79,15.9T2,12Q2,9.92 2.79,8.1Q3.58,6.27 4.93,4.93Q6.28,3.57 8.1,2.79Q9.93,2 12,2t3.9,0.79t3.17,2.14q1.35,1.35 2.14,3.17Q22,9.92 22,12t-0.79,3.9t-2.14,3.17q-1.35,1.35-3.17,2.14T12,22q-2.07,0-3.9-0.79ZM12,20q1.35,0 2.6-0.44t2.3-1.26L5.7,7.1Q4.88,8.15 4.44,9.4T4,12q0,3.35 2.33,5.68T12,20Zm6.3-3.1q0.82-1.05 1.26-2.3T20,12q0-3.35-2.32-5.68T12,4Q10.65,4 9.4,4.44T7.1,5.7L18.3,16.9ZM12,12Z"/></svg>
+                <svg data-type="favorite" data-status="${data.isFavorite}" class="${data.isFavorite ? "hover:fill-gray-600" : "hover:fill-amber-300"}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="${data.isFavorite ? "#FFD414" : "#FFFFFF"}"><path data-type="favorite" data-status="${data.isFavorite}" d="${requestRenderSVGContect(data.isFavorite ? "fill" : false)}"/></svg>
+                <svg data-type="blacklist" data-status="${data.isBlacklisted}" class="hover:fill-red-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="${data.isBlacklisted ? "#cf2b2b" : "#999999"}"><path data-type="blacklist" data-status="${data.isBlacklisted}" d="M8.1,21.21q-1.82-0.79-3.17-2.14Q3.58,17.73 2.79,15.9T2,12Q2,9.92 2.79,8.1Q3.58,6.27 4.93,4.93Q6.28,3.57 8.1,2.79Q9.93,2 12,2t3.9,0.79t3.17,2.14q1.35,1.35 2.14,3.17Q22,9.92 22,12t-0.79,3.9t-2.14,3.17q-1.35,1.35-3.17,2.14T12,22q-2.07,0-3.9-0.79ZM12,20q1.35,0 2.6-0.44t2.3-1.26L5.7,7.1Q4.88,8.15 4.44,9.4T4,12q0,3.35 2.33,5.68T12,20Zm6.3-3.1q0.82-1.05 1.26-2.3T20,12q0-3.35-2.32-5.68T12,4Q10.65,4 9.4,4.44T7.1,5.7L18.3,16.9ZM12,12Z"/></svg>
 
                 <p class="text-white font-semibold">${data.channelNumber}</p>
                 <p class="text-white font-semibold">${data.name}</p>
@@ -51,6 +52,7 @@ export async function loadDefaultChannelSteram() {
     const channel_preview = document.getElementById("channel-preview");
 
     if (Hls.isSupported()) {
+
         let hlsElement = new Hls();
         hlsElement.loadSource(streamUrl);
         hlsElement.attachMedia(channel_preview);
@@ -119,13 +121,13 @@ async function loadChannelsBySelect(selectedInedx) {
     const result = channels.filter(channel => {
 
         if (selectedInedx == 0)
-            return !channel.isBlacklisted;
+            return channel.countryCode === getSelectedCountry() && !channel.isBlacklisted;
         
         if (selectedInedx == 1)
-            return channel.isFavorite === true;
+            return channel.countryCode === getSelectedCountry() && channel.isFavorite === true;
 
         if (selectedInedx == 2)
-            return channel.isBlacklisted === true;
+            return channel.countryCode === getSelectedCountry() && channel.isBlacklisted === true;
 
     })
 
@@ -142,20 +144,40 @@ export function loadChannelEvents() {
 
     ul_channels.addEventListener("click", async (event) => {
 
-        if (event && event.target && (event.target.tagName === "svg" || event.target.tagName === "path")) {
-            console.log("Hi !")
-            return true;
-        }
+        const channelsObject = await getChannesFromCountryAPI();
+        if (!channelsObject) return;
 
         const listItem = event.target.closest("li");
         if (listItem && listItem.id) {
 
-            const channelsObject = await getChannesFromCountryAPI();
-            if (!channelsObject) return;
-    
             const selectedChannel = channelsObject.find(channel => channel.id === listItem.id);
             if (!selectedChannel) return;
-    
+
+            if (event && event.target && (event.target.tagName === "svg" || event.target.tagName === "path")) {
+
+                if (event.target.dataset.type == "favorite") {
+
+                    let favoriteStatus = event.target.dataset.status === "true" ? false : true;
+                    setChannelFavorite(listItem.id, favoriteStatus);
+
+                    selectedChannel.isFavorite = favoriteStatus;
+                    listItem.innerHTML = requestRenderChannels(selectedChannel);
+
+                } else if (event.target.dataset.type == "blacklist") {
+
+                    let blacklistStatus = event.target.dataset.status === "true" ? false : true;
+                    setChannelBlackList(listItem.id, blacklistStatus);
+
+                    selectedChannel.isFavorite = false;
+                    selectedChannel.isBlacklisted = blacklistStatus;
+
+                    listItem.classList.add("hidden");
+
+                }
+
+                return true;
+            }
+
             const channel_preview = document.getElementById("channel-preview");
             if (!channel_preview) return;
     

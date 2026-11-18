@@ -12,6 +12,12 @@ function requestRenderListCountry(data) {
     `
 }
 
+let SELECTED_COUNTRY = "MA"
+
+export function getSelectedCountry() {
+    return SELECTED_COUNTRY;
+}
+
 export async function loadListCountry() {
 
     const countryData = await getCountryFromAPI();
@@ -34,6 +40,8 @@ export async function loadListCountry() {
 
             const channels = await getChannesFromCountryAPI()
             if (!channels) return false;
+
+            SELECTED_COUNTRY = listItem.id;
 
             const result = channels.filter(channel => { return channel.countryCode === listItem.id && !channel.isBlacklisted })
 

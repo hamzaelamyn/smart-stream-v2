@@ -34,9 +34,9 @@ export async function getCountryFromAPI() {
 
 }
 
-export async function getChannesFromCountryAPI() {
+const API_URL = "https://6af352bbd2377d6c3704e947.mockapi.io/api/v1/channels"
 
-    const API_URL = "https://6af352bbd2377d6c3704e947.mockapi.io/api/v1/channels"
+export async function getChannesFromCountryAPI() {
 
     if (CHANNELS.length > 0) return CHANNELS;
 
@@ -81,6 +81,44 @@ export async function getChannesFromCountryAPI() {
         text_error.classList.remove("text-white")
         text_error.classList.add("text-red-500")
 
+    }
+
+}
+
+export async function setChannelFavorite(channelID, status) {
+
+    try {
+
+        const response = await fetch(`${API_URL}/${channelID}`, {                              
+            method: "PUT",                                                   
+            headers: { "Content-Type": "application/json" },                 
+            body: JSON.stringify({ isFavorite: status })
+        });
+    
+        if (!response.ok)
+            throw new Error(`Failed to set channel id ${channelID} to your favorite | Error status (${response.status})`);
+
+    } catch (error) {
+        console.log(error);
+    }
+
+}
+
+export async function setChannelBlackList(channelID, status) {
+
+    try {
+
+        const response = await fetch(`${API_URL}/${channelID}`, {                              
+            method: "PUT",                                                   
+            headers: { "Content-Type": "application/json" },                
+            body: JSON.stringify({ isBlacklisted: status, isFavorite: false })
+        });
+    
+        if (!response.ok)
+            throw new Error(`Failed to set channel id ${channelID} to your blacklisted | Error status (${response.status})`);
+
+    } catch (error) {
+        console.log(error);
     }
 
 }

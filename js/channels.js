@@ -157,6 +157,11 @@ export function loadChannelEvents() {
 
                 if (event.target.dataset.type == "favorite") {
 
+                    if (selectedChannel.isBlacklisted) {
+                        alert("This channel is blacklisted you can't add this channel to favorite !")
+                        return false;
+                    }
+
                     let favoriteStatus = event.target.dataset.status === "true" ? false : true;
                     setChannelFavorite(listItem.id, favoriteStatus);
 
@@ -166,8 +171,26 @@ export function loadChannelEvents() {
                 } else if (event.target.dataset.type == "blacklist") {
 
                     let blacklistStatus = event.target.dataset.status === "true" ? false : true;
-                    setChannelBlackList(listItem.id, blacklistStatus);
+                    if (!blacklistStatus) {
 
+                        const CONFIRM = confirm("Do you really want to remove the channel from Blacklist ?")
+
+                        if (CONFIRM) {
+
+                            setChannelBlackList(listItem.id, blacklistStatus);
+
+                            selectedChannel.isFavorite = false;
+                            selectedChannel.isBlacklisted = blacklistStatus;
+
+                            listItem.classList.add("hidden");
+
+                            return true;
+
+                        }
+                    }
+
+                    setChannelBlackList(listItem.id, blacklistStatus);
+                    
                     selectedChannel.isFavorite = false;
                     selectedChannel.isBlacklisted = blacklistStatus;
 

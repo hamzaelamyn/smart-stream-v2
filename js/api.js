@@ -122,3 +122,18 @@ export async function setChannelBlackList(channelID, status) {
     }
 
 }
+
+export async function removeChannel(channelID) {
+
+    try {
+
+        const response = await fetch(`${API_URL}/${channelID}`, { method: "DELETE" });
+
+        if (!response.ok)
+            throw new Error(`Failed to remove channel id ${channelID} from your blacklisted | Error status (${response.status})`);
+
+    } catch (error) {
+        console.log(error);
+    }
+
+}

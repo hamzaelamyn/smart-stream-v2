@@ -36,6 +36,57 @@
 
         </aside>
 
+        <section id="popout-create-channels" class="hidden flex fixed inset-0 bg-black/75 backdrop-blur-xs items-center justify-center z-50">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+
+                <div class="p-4 border-b border-zinc-800 bg-zinc-900/50 flex justify-between items-center">
+                    <h2 class="text-lg font-bold text-white">Add new channel to your stream IPTV</h2>
+                </div>
+
+                <form class="grid gap-3 p-4">
+
+                    <span id="notification-new-channel" class="hidden font-semibold text-xs text-red-400 bg-red-950/40 p-2 rounded border border-red-900/50"></span>
+
+                    <input id="input-channel-number" class="font-medium p-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-100 placeholder-zinc-400 focus:outline-none focus:border-gray-500" type="number" min="1" step="1" placeholder="Channel Number" required>
+                    <input id="input-channel-name" class="font-medium p-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-100 placeholder-zinc-400 focus:outline-none focus:border-gray-500" type="text" placeholder="Channel Name" minlength="3" maxlength="30" pattern=".{3,30}" required>
+                    <input id="input-channel-logoURL" class="font-medium p-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-100 placeholder-zinc-400 focus:outline-none focus:border-gray-500" type="text" placeholder="Logo Channel URL" required>
+                    <input id="input-channel-streamURL" class="font-medium p-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-100 placeholder-zinc-400 focus:outline-none focus:border-gray-500" type="text" placeholder="Stream Channel URL" required>
+
+                    <select id="select-channel-country" class="font-medium rounded-lg p-2.5 bg-zinc-800 border border-zinc-700 text-zinc-100 focus:outline-none focus:border-gray-500" required>
+                        <option value="" disabled selected>Please choose Country</option>
+                        <option value="MA">Maroc</option>
+                        <option value="TN">Tunisia</option>
+                        <option value="FR">France</option>
+                        <option value="ES">Espane</option>
+                        <option value="BE">Belgium</option>
+                        <option value="QA">Qatar</option>
+                    </select>
+
+                    <select id="select-channel-category" class="font-medium rounded-lg p-2.5 bg-zinc-800 border border-zinc-700 text-zinc-100 focus:outline-none focus:border-gray-500" required>
+                        <option value="" disabled selected>Please choose Category</option>
+                        <option value="GENERAL">GENERAL</option>
+                        <option value="NEWS">NEWS</option>
+                        <option value="SPORTS">SPORTS</option>
+                        <option value="CINEMA">CINEMA</option>
+                        <option value="DOCUMENTAIRE">DOCUMENTAIRE</option>
+                        <option value="DIVERTISSEMENT">DIVERTISSEMENT</option>
+                    </select>
+
+                    <div class="flex gap-2 mt-2">
+                        <button id="btn-create-channel" type="button" class="flex-8 font-semibold text-white rounded-lg bg-gray-700 hover:bg-gray-800 transition-colors h-10 cursor-pointer">
+                            Create new channel
+                        </button>
+
+                        <button id="btn-close-channels" type="button" class="flex-2 font-semibold text-white rounded-lg bg-red-800 hover:bg-red-900 border border-red-800/50 transition-colors h-10 cursor-pointer">
+                            Close
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </section>
+
         <section id="main-section" class="blur-md p-4 xl:p-8">
 
             <div class="grid grid-cols-1 gap-3 xl:flex xl:justify-center xl:gap-6">
@@ -55,7 +106,9 @@
                         <option value="blacklist-channels">Blacklist</option>
                     </select>
 
-                    <ul id="list-channels" class="max-h-dvh xl:max-h-145 overflow-y-auto space-y-1 scrollbar-thumb-gray-500">
+                    <button id="btn-add-channel" class="bg-[#161d2e] hover:bg-[#1e2940] focus:bg-[#1e2940] text-white p-3 w-full transition-colors rounded-md cursor-pointer">Add new channel</button>
+
+                    <ul id="list-channels" class="max-h-dvh xl:max-h-115 overflow-y-auto space-y-1 scrollbar-thumb-gray-500">
 
                     </ul>
 

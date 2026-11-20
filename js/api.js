@@ -1,10 +1,15 @@
-let CHANNELS = [];
+import { loadDefaultChannelSteram } from "./channels.js"
+
+export let CHANNELS = [];
+
+const COUNTRY_URL = "https://iptv-org.github.io/api/countries.json"
+const API_URL = "https://6af352bbd2377d6c3704e947.mockapi.io/api/v1/channels"
 
 export async function getCountryFromAPI() {
 
     try {
 
-        const response = await fetch("https://iptv-org.github.io/api/countries.json");
+        const response = await fetch(COUNTRY_URL);
 
         if (!response.ok) {
             let message = `Failed to fetch category country (Status: ${response.status})`;
@@ -34,11 +39,9 @@ export async function getCountryFromAPI() {
 
 }
 
-const API_URL = "https://6af352bbd2377d6c3704e947.mockapi.io/api/v1/channels"
+export async function getChannesFromCountryAPI(forceAPI) {
 
-export async function getChannesFromCountryAPI() {
-
-    if (CHANNELS.length > 0) return CHANNELS;
+    if (!forceAPI && CHANNELS.length > 0) return CHANNELS;
 
     try {
 
@@ -59,15 +62,6 @@ export async function getChannesFromCountryAPI() {
         }
 
         const data = await response.json();
-
-        // for (const value of data) {
-        //     if (!value.isFavorite || !value.isBlacklisted)
-        //         await fetch(`${API_URL}/${value.id}`, {
-        //             method: "PUT",
-        //             headers: { "Content-Type": "application/json" },
-        //             body: JSON.stringify({ isFavorite: false, isBlacklisted: false })
-        //         });
-        // }
 
         CHANNELS = [...data];
 
@@ -131,6 +125,27 @@ export async function removeChannel(channelID) {
 
         if (!response.ok)
             throw new Error(`Failed to remove channel id ${channelID} from your blacklisted | Error status (${response.status})`);
+
+    } catch (error) {
+        console.log(error);
+    }
+
+}
+
+export async function createChannel(data) {
+
+    try {
+
+        const response = await fetch(API_URL, { 
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok)
+            throw new Error(`Failed to add channel to your list IPTV | Error status (${response.status})`);
+
+        loadDefaultChannelSteram(true)
 
     } catch (error) {
         console.log(error);

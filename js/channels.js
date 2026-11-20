@@ -36,8 +36,24 @@ export async function loadDefaultChannelSteram(forceAPI) {
 
     list_channels.innerHTML = "";
 
-    const result = channels.filter(channel => { return channel.countryCode === DEFAULT_COUNTRY && !channel.isBlacklisted })
-    result.forEach(data => list_channels.innerHTML += requestRenderChannels(data))
+    const select_channels = document.getElementById("select-channels");
+    const saved_filter = localStorage.getItem("selectedChannelFilter");
+    if (select_channels && (saved_filter === "all-channels" || saved_filter === "favorite-channels")) {
+        select_channels.value = saved_filter;
+    }
+
+    const selected_index = select_channels ? select_channels.selectedIndex : 0;
+
+    const result = channels.filter(channel => {
+        if (selected_index === 1)
+            return channel.countryCode === getSelectedCountry() && channel.isFavorite === true;
+
+        if (selected_index === 2)
+            return channel.countryCode === getSelectedCountry() && channel.isBlacklisted === true;
+
+        return channel.countryCode === getSelectedCountry() && !channel.isBlacklisted;
+    })
+    result.forEach(data => list_channels.innerHTML += requestRenderChannels(data, selected_index))
 
     const selectedChannelObject = channels.filter(channel => { return Number(channel.id) === DEFAULT_CHANNELID });
     if (!selectedChannelObject) return false;
@@ -111,7 +127,7 @@ export async function loadDefaultChannelSteram(forceAPI) {
     
 }
 
-async function loadChannelsBySelect(selectedInedx) {
+export async function loadChannelsBySelect(selectedInedx) {
 
     const list_channels = document.getElementById("list-channels");
     if (!list_channels) return false;
@@ -280,7 +296,15 @@ export function loadChannelEvents() {
 
     const select_channels = document.getElementById("select-channels");
     if (select_channels) {
+        const saved_filter = localStorage.getItem("selectedChannelFilter");
+        if (saved_filter === "all-channels" || saved_filter === "favorite-channels") {
+            select_channels.value = saved_filter;
+        }
+
         select_channels.addEventListener("change", () => {
+            if (select_channels.value === "all-channels" || select_channels.value === "favorite-channels") {
+                localStorage.setItem("selectedChannelFilter", select_channels.value);
+            }
             loadChannelsBySelect(select_channels.selectedIndex)
         });
     }

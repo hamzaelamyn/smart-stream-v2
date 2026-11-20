@@ -4,9 +4,9 @@ function toggleCreateChannelPopOut() {
 
     const popout_element = document.getElementById("popout-create-channels");
     if (!popout_element) return false;
-    
+
     popout_element.classList.toggle("hidden");
-    
+
     const span_notification = document.getElementById("notification-new-channel");
     if (!span_notification) return false;
     span_notification.classList.add("hidden");

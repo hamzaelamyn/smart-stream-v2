@@ -1,5 +1,5 @@
 import { getCountryFromAPI, getChannesFromCountryAPI } from "./api.js";
-import { requestRenderChannels, loadDefaultChannelSteram } from "./channels.js";
+import { loadChannelsBySelect, loadDefaultChannelSteram } from "./channels.js";
 
 function requestRenderListCountry(data) {
     return `
@@ -43,10 +43,8 @@ export async function loadListCountry() {
 
             SELECTED_COUNTRY = listItem.id;
 
-            const result = channels.filter(channel => { return channel.countryCode === listItem.id && !channel.isBlacklisted })
-
-            list_channels.innerHTML = "";
-            result.forEach(data => list_channels.innerHTML += requestRenderChannels(data))
+            const select_channels = document.getElementById("select-channels");
+            loadChannelsBySelect(select_channels ? select_channels.selectedIndex : 0);
 
         }
     })

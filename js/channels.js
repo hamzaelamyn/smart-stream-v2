@@ -23,7 +23,7 @@ export function requestRenderChannels(data, category) {
     `
 }
 
-export async function loadDefaultChannelSteram() {
+export async function loadDefaultChannelSteram(forceAPI) {
 
     const DEFAULT_COUNTRY = "MA";
     const DEFAULT_CHANNELID = 2;
@@ -31,7 +31,7 @@ export async function loadDefaultChannelSteram() {
     const list_channels = document.getElementById("list-channels");
     if (!list_channels) return false;
 
-    const channels = await getChannesFromCountryAPI();
+    const channels = await getChannesFromCountryAPI(forceAPI);
     if (!channels) return false;
 
     list_channels.innerHTML = "";
@@ -47,7 +47,7 @@ export async function loadDefaultChannelSteram() {
         if (listItem && listItem.id && listItem.id == DEFAULT_CHANNELID)
             element.dataset.active = "true";
     });
-        
+            
     const streamUrl = selectedChannelObject[0].streamUrl;
     if (!streamUrl) return false;
 
@@ -72,6 +72,7 @@ export async function loadDefaultChannelSteram() {
 
         });
     } else if (channel_preview.canPlayType("application/vnd.apple.mpegurl")) {
+        
         channel_preview.src = streamUrl;
         channel_preview.load();
 
